@@ -12,7 +12,9 @@ function App() {
             Name: Marius Clarence P. Panahon<br/>
             Email: mariuspanahon@example.com<br/>
             Other Personal Info: young stunna, 21 years old<br/>
-            <a href="https://github.com/M4r-shall/Panahon_webprog" target="github"></a>
+            <div>
+               <a href="https://github.com/M4r-shall/Panahon_webprog" target="github">Github Profile</a>
+            </div>
           </p>
           </header>
       </div>
