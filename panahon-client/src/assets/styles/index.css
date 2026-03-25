@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+  /* Updated to a rich matte grey-black */
+  background-color: #0e0e0e; 
+}
+
+:root {
+  --crimson: #730c1e;
+  --maroon-deep: #210207;
+  --maroon-mid: #480415;
+  
+  /* THE MATTE BLACK TONES */
+  --charcoal: #0e0e0e; 
+  --bg: #0e0e0e;
+  
+  --text: #a1a1aa;
+  --text-h: #ffffff;
+  --border-crimson: rgba(115, 12, 30, 0.45); /* Softened the line slightly */
+  
+  --sans: 'Inter', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+/* 1. THE MATTE BACKGROUND FIX */
+body {
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg) !important;
+  /* Lowered the opacity of the glows to keep the "matte" feel */
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(72, 4, 21, 0.3) 0px, transparent 45%),
+    radial-gradient(at 100% 100%, rgba(33, 2, 7, 0.3) 0px, transparent 45%) !important;
+  background-attachment: fixed;
+  color: var(--text) !important;
+  min-height: 100vh;
+}
+
+/* 2. THE TEXT FIX */
+h1, h2, h3, h4, .text-zinc-900 {
+  color: var(--text-h) !important;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1.1;
+}
+
+p, span, li, .text-zinc-600, .text-zinc-500 {
+  color: var(--text) !important;
+}
+
+/* 3. THE "LINES" AND SIDE-GAP FIX */
+section {
+  background-color: transparent !important;
+  border-top: 1px solid var(--border-crimson) !important;
+  border-bottom: 1px solid var(--border-crimson) !important;
+  width: 100%;
+  margin-top: -1px;
+}
+
+/* 4. FROSTED MAROON CARDS */
+article, .rounded-3xl {
+  background-color: rgba(33, 2, 7, 0.25) !important; /* Lighter maroon for better contrast */
+  border: 1px solid rgba(115, 12, 30, 0.3) !important;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+/* --- UI ELEMENTS --- */
+h1 {
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--maroon-mid);
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--crimson);
+} 
