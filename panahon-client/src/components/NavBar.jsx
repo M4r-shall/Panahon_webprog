@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import logoImg from '../assets/icons/cat santa.jpg'; 
+import logoImg from '../assets/icons/logo.png'; 
 
 const navLinkClassName = ({ isActive }) =>
   [

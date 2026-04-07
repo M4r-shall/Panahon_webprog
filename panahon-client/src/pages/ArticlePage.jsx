@@ -1,11 +1,10 @@
 import Button from '../components/Button';
 
-// STEP 1: Import your project screenshots
-// I'm using the paths from your folder structure
-import todagoImg from '../assets/icons/cat narly.jpg'; 
-import blenderImg from '../assets/icons/cat santa.jpg'; 
-import newsfeedImg from '../assets/icons/cat narly.jpg'; 
-import tennisImg from '../assets/icons/cat santa.jpg'; 
+
+import todagoImg from '../assets/icons/app.png'; 
+import blenderImg from '../assets/icons/blender.png'; 
+import newsfeedImg from '../assets/icons/newsfeed.png'; 
+import tennisImg from '../assets/icons/tennis.png'; 
 
 const ArticlePage = () => {
   return (
