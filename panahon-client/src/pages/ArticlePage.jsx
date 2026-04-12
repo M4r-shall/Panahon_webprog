@@ -1,105 +1,82 @@
+import { useParams, Link } from 'react-router-dom';
 import Button from '../components/Button';
-
-
-import todagoImg from '../assets/icons/app.png'; 
-import blenderImg from '../assets/icons/blender.png'; 
-import newsfeedImg from '../assets/icons/newsfeed.png'; 
-import tennisImg from '../assets/icons/tennis.png'; 
+import articles from '../assets/article-content.js';
 
 const ArticlePage = () => {
+  // Grab the dynamic ':name' part of the URL
+  const { name } = useParams();
+  
+  // Find the specific article in your data file that matches this name
+  const article = articles.find(article => article.name === name);
+
+  // If the user types a random URL like /articles/fake-project, show this:
+  if (!article) {
+    return (
+      <div className="flex w-full flex-col items-center justify-center gap-6 px-4 py-20">
+        <h1 className="text-3xl font-bold text-white">Project not found</h1>
+        <p className="text-zinc-400">The project you are looking for doesn't exist.</p>
+        <Button to="/articles" className="mt-6 bg-[#730c1e] text-white border-none hover:bg-[#480415]">
+          Back to Portfolio
+        </Button>
+      </div>
+    );
+  }
+
+  // If the article IS found, render the detailed view:
   return (
     <div className="flex w-full flex-col gap-6">
       
       {/* --- HEADER SECTION --- */}
-      <section className="border-y-2 border-zinc-900 bg-zinc-50 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-        <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-zinc-500">
-          Projects & Explorations
-        </p>
-        <h1 className="max-w-xl text-3xl font-bold leading-tight text-zinc-900 sm:text-4xl">
-          A showcase of development, design, and discipline.
-        </h1>
-        <p className="mt-4 max-w-lg text-sm leading-7 text-zinc-600 sm:text-base">
-          From full-stack mobile applications at **National University**, 
-          here is a look at the projects I’ve been building.
-        </p>
-        <div className="mt-6">
-          <Button to="/">Back Home</Button>
-        </div>
-      </section>
-
-      {/* --- PROJECT GRID --- */}
-      <section className="border-y-2 border-zinc-900 bg-zinc-50 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-        <div className="mb-6">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-zinc-500">
-            Work Samples
-          </p>
-          <h2 className="mt-2 text-2xl font-semibold text-zinc-900">Featured Portfolio Pieces</h2>
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="border-y border-[#480415] bg-transparent px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+        <div className="max-w-3xl mx-auto">
+          <div className="mb-6">
+            <Link to="/articles" className="text-sm font-semibold text-zinc-400 hover:text-[#730c1e] transition-colors">
+              ← Back to Portfolio
+            </Link>
+          </div>
           
-          {/* Project 1: TodaGo */}
-          <article className="rounded-3xl border-2 border-zinc-900 bg-zinc-100 p-4 transition-all hover:shadow-[4px_4px_0px_0px_rgba(24,24,27,1)]">
-            <div className="flex aspect-4/3 items-center justify-center rounded-[1.25rem] bg-zinc-200 overflow-hidden border border-zinc-300">
-              <img src={todagoImg} alt="TodaGo App" className="w-full h-full object-cover" />
-            </div>
-            <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500">
-              Capstone
-            </p>
-            <h3 className="mt-2 text-lg font-semibold text-zinc-900">TodaGo: Ride-Hailing App</h3>
-            <p className="mt-3 text-sm leading-6 text-zinc-600">
-              Modernizing local transport using Flutter. A capstone project focused on real-time booking logic.
-            </p>
-            <Button className="mt-4" to="https://github.com">View Details</Button>
-          </article>
-
-          {/* Project 2: Blender */}
-          <article className="rounded-3xl border-2 border-zinc-900 bg-zinc-100 p-4 transition-all hover:shadow-[4px_4px_0px_0px_rgba(24,24,27,1)]">
-            <div className="flex aspect-4/3 items-center justify-center rounded-[1.25rem] bg-zinc-200 overflow-hidden border border-zinc-300">
-              <img src={blenderImg} alt="3D Footwear Render" className="w-full h-full object-cover" />
-            </div>
-            <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500">
-              3D Modeling
-            </p>
-            <h3 className="mt-2 text-lg font-semibold text-zinc-900">Footwear Design in Blender</h3>
-            <p className="mt-3 text-sm leading-6 text-zinc-600">
-              Exploring 3D space by creating high-fidelity shoe models with custom textures and lighting.
-            </p>
-            <Button className="mt-4">See Renders</Button>
-          </article>
-
-          {/* Project 3: Mobile Assignment */}
-          <article className="rounded-3xl border-2 border-zinc-900 bg-zinc-100 p-4 transition-all hover:shadow-[4px_4px_0px_0px_rgba(24,24,27,1)]">
-            <div className="flex aspect-4/3 items-center justify-center rounded-[1.25rem] bg-zinc-200 overflow-hidden border border-zinc-300">
-              <img src={newsfeedImg} alt="Newsfeed UI" className="w-full h-full object-cover" />
-            </div>
-            <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500">
-              Flutter App
-            </p>
-            <h3 className="mt-2 text-lg font-semibold text-zinc-900">Social Newsfeed UI</h3>
-            <p className="mt-3 text-sm leading-6 text-zinc-600">
-              Developing interactive newsfeed features and notification systems for mobile programming.
-            </p>
-            <Button className="mt-4">View Source</Button>
-          </article>
-
-          {/* Project 4: Tennis/Discipline */}
-          <article className="rounded-3xl border-2 border-zinc-900 bg-zinc-100 p-4 transition-all hover:shadow-[4px_4px_0px_0px_rgba(24,24,27,1)]">
-            <div className="flex aspect-4/3 items-center justify-center rounded-[1.25rem] bg-zinc-200 overflow-hidden border border-zinc-300">
-              <img src={tennisImg} alt="Tennis Discipline" className="w-full h-full object-cover" />
-            </div>
-            <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500">
-              Discipline
-            </p>
-            <h3 className="mt-2 text-lg font-semibold text-zinc-900">17 Years on the Court</h3>
-            <p className="mt-3 text-sm leading-6 text-zinc-600">
-              How a lifetime of competitive lawn tennis shaped my approach to software engineering.
-            </p>
-            <Button className="mt-4" to="/about">My Story</Button>
-          </article>
-
+          <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.4em] text-[#730c1e]">
+            {article.category || 'Project Detail'}
+          </p>
+          
+          <h1 className="text-4xl font-extrabold leading-tight text-white sm:text-5xl">
+            {article.title}
+          </h1>
         </div>
       </section>
+
+      {/* --- CONTENT SECTION --- */}
+      <section className="bg-transparent px-4 py-6 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl">
+          
+          {/* Hero Image for the Article */}
+          <div className="mb-10 flex aspect-video w-full items-center justify-center rounded-2xl bg-[#140f17] border border-[#480415] overflow-hidden shadow-[0_0_30px_rgba(115,12,30,0.1)]">
+            {article.image ? (
+              <img src={article.image} alt={article.title} className="w-full h-full object-cover" />
+            ) : (
+              <div className="h-24 w-24 border border-[#480415] bg-[#210207]/40" />
+            )}
+          </div>
+
+          {/* The Written Content */}
+          <div className="prose prose-invert max-w-none space-y-6 text-zinc-300">
+            {article.content.map((paragraph, index) => (
+              <p key={index} className="text-base leading-8 text-zinc-300">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+
+          {/* Bottom Navigation */}
+          <div className="mt-12 border-t border-[#480415] pt-8">
+            <Button to="/articles" className="border-[#730c1e] text-white hover:bg-[#730c1e]/20">
+              Back to Portfolio
+            </Button>
+          </div>
+          
+        </div>
+      </section>
+      
     </div>
   );
 };

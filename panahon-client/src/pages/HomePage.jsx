@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import heroImg from '../assets/icons/mobileweb.png'; 
 import todagoImg from '../assets/icons/app.png'; 
@@ -5,6 +6,8 @@ import blenderImg from '../assets/icons/blender.png';
 import socialImg from '../assets/icons/newsfeed.png';  
 
 const HomePage = () => {
+  const navigate = useNavigate(); 
+
   return (
     <div className="flex w-full flex-col">
       <section className="px-6 py-8 lg:px-12 bg-transparent overflow-hidden">
@@ -31,7 +34,7 @@ const HomePage = () => {
             <div className="flex aspect-square items-center justify-center rounded-[1.25rem] bg-[#140f17] border border-[#480415] overflow-hidden">
                 <img 
                     src={heroImg} 
-                    alt="Hero Portrait or Screenshot" 
+                    alt="Hero Portrait" 
                     className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" 
                 />
             </div>
@@ -80,18 +83,26 @@ const HomePage = () => {
 
             <div className="grid gap-6 md:grid-cols-3">
               {[
-                { title: 'TodaGo App', tag: 'TodaGo UI', desc: 'A Flutter-based ride-hailing solution designed to modernize transport.', img: todagoImg },
-                { title: 'Blender Designs', tag: '3D Render', desc: 'High-fidelity 3D footwear modeling focusing on realistic textures.', img: blenderImg },
-                { title: 'Newsfeed System', tag: 'Social UI', desc: 'A Flutter-built social media interface featuring real-time logic.', img: socialImg },
+                { title: 'TodaGo App', name: 'todago-app', tag: 'TodaGo UI', desc: 'A Flutter-based ride-hailing solution designed to modernize transport.', img: todagoImg },
+                { title: 'Blender Designs', name: 'blender-footwear', tag: '3D Render', desc: 'High-fidelity 3D footwear modeling focusing on realistic textures.', img: blenderImg },
+                { title: 'Newsfeed System', name: 'social-newsfeed', tag: 'Social UI', desc: 'A Flutter-built social media interface featuring real-time logic.', img: socialImg },
               ].map((project, i) => (
-                <article key={i} className="rounded-2xl border border-[#480415] bg-[#210207]/40 p-5 backdrop-blur-md flex flex-col justify-between group hover:border-[#730c1e] transition-colors">
+                <article 
+                  key={i} 
+                  onClick={() => {
+                    // Intentionally break the link for Blender to show off the NotFoundPage
+                    if (project.name === 'blender-footwear') {
+                      navigate('/intentionally-broken-link');
+                    } else {
+                      navigate(`/articles/${project.name}`);
+                    }
+                  }}
+                  className="rounded-2xl border border-[#480415] bg-[#210207]/40 p-5 backdrop-blur-md flex flex-col justify-between group hover:border-[#730c1e] transition-colors cursor-pointer"
+                >
                   <div>
                     {/* Project Image Container */}
                     <div className="flex aspect-4/3 items-center justify-center rounded-xl bg-[#140f17] border border-[#480415] overflow-hidden relative">
-                      {/* Dark overlay that disappears on hover */}
                       <div className="absolute inset-0 bg-[#730c1e]/5 group-hover:bg-transparent transition-colors z-10"></div>
-                      
-                      {/* Actual Image */}
                       <img 
                         src={project.img} 
                         alt={project.title} 
@@ -104,7 +115,8 @@ const HomePage = () => {
                       {project.desc}
                     </p>
                   </div>
-                  <Button className="mt-8 w-full py-3 text-[10px] border-[#730c1e] text-white hover:bg-[#730c1e]" variant="secondary" to="/articles">
+                  
+                  <Button className="mt-8 w-full py-3 text-[10px] border-[#730c1e] text-white hover:bg-[#730c1e]" variant="secondary">
                     View Project Details
                   </Button>
                 </article>
