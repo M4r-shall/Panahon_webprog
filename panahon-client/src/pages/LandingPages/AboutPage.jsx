@@ -1,10 +1,10 @@
-import Button from '../components/Button';
+import Button from '../../components/Button';
 
-import profileImg from '../assets/icons/cat narly.jpg'; 
-import tennisImg from '../assets/icons/tennis.png'; 
-import blenderImg from '../assets/icons/cat santa.jpg'; 
-import codingImg from '../assets/icons/coding.png'; 
-import esportsImg from '../assets/icons/esports.png'; 
+import profileImg from '../../assets/icons/cat narly.jpg'; 
+import tennisImg from '../../assets/icons/tennis.png'; 
+import blenderImg from '../../assets/icons/cat santa.jpg'; 
+import codingImg from '../../assets/icons/coding.png'; 
+import esportsImg from '../../assets/icons/esports.png'; 
 
 const AboutPage = () => {
   return (

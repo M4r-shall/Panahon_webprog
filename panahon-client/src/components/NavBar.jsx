@@ -14,6 +14,7 @@ const NavBar = () => {
     <header className="fixed inset-x-0 top-0 z-50 border-b border-[#480415]/50 bg-[#140f17]/80 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4 lg:px-12">
         
+        {/* LEFT: Brand / Logo */}
         <NavLink to="/" className="flex items-center gap-4 group">
           <div className="relative">
             <div className="absolute -inset-1 bg-[#730c1e] rounded-full blur opacity-25 group-hover:opacity-60 transition duration-500"></div>
@@ -33,13 +34,29 @@ const NavBar = () => {
           </div>
         </NavLink>
 
+        {/* CENTER: Navigation Links */}
         <nav className="hidden items-center gap-1 md:flex">
           <NavLink to="/" end className={navLinkClassName}>Home</NavLink>
           <NavLink to="/about" className={navLinkClassName}>About</NavLink>
           <NavLink to="/articles" className={navLinkClassName}>Projects</NavLink>
         </nav>
 
-        <div className="h-2 w-2 rounded-full bg-[#730c1e] animate-pulse md:hidden"></div>
+        {/* RIGHT: Always Visible Auth Buttons */}
+        <div className="flex items-center gap-3">
+          <NavLink 
+            to="/auth/signin" 
+            className="rounded-sm px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 transition-all duration-300 hover:text-white hover:bg-[#480415]/30 whitespace-nowrap"
+          >
+            Sign In
+          </NavLink>
+          <NavLink 
+            to="/auth/signup" 
+            className="rounded-sm border-2 border-[#730c1e] bg-[#730c1e] px-6 py-2 text-[10px] font-black uppercase tracking-[0.3em] text-white shadow-[0_0_15px_rgba(115,12,30,0.4)] transition-all duration-300 hover:bg-[#480415] hover:border-[#480415] whitespace-nowrap"
+          >
+            Sign Up
+          </NavLink>
+        </div>
+
       </div>
     </header>
   );

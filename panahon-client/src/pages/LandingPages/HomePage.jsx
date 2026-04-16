@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import Button from '../components/Button';
-import heroImg from '../assets/icons/mobileweb.png'; 
-import todagoImg from '../assets/icons/app.png'; 
-import blenderImg from '../assets/icons/blender.png'; 
-import socialImg from '../assets/icons/newsfeed.png';  
+import Button from '../../components/Button';
+import heroImg from '../../assets/icons/mobileweb.png'; 
+import todagoImg from '../../assets/icons/app.png'; 
+import blenderImg from '../../assets/icons/blender.png'; 
+import socialImg from '../../assets/icons/newsfeed.png';  
 
 const HomePage = () => {
   const navigate = useNavigate(); 

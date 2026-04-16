@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
-import Button from '../components/Button';
-import articles from '../assets/article-content.js';
+import Button from '../../components/Button';
+import articles from '../../assets/article-content.js';
 
 const ArticlePage = () => {
   // Grab the dynamic ':name' part of the URL
