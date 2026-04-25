@@ -47,7 +47,7 @@ const NavBar = () => {
             to="/auth/signin" 
             className="rounded-sm px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 transition-all duration-300 hover:text-white hover:bg-[#480415]/30 whitespace-nowrap"
           >
-            Sign In
+            Log In
           </NavLink>
           <NavLink 
             to="/auth/signup" 

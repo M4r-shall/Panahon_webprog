@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import codingImg from '../assets/icons/image.png'; 
+import codingImg from '../assets/icons/cat narly.jpg'; 
 
 const AuthLayout = () => {
   return (

@@ -1,6 +1,6 @@
 import Button from '../../components/Button';
 
-import profileImg from '../../assets/icons/cat narly.jpg'; 
+import profileImg from '../../assets/icons/Me.png'; 
 import tennisImg from '../../assets/icons/tennis.png'; 
 import blenderImg from '../../assets/icons/cat santa.jpg'; 
 import codingImg from '../../assets/icons/coding.png'; 
