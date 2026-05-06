@@ -1,71 +1,278 @@
-import React from 'react';
-import { Typography, Box, Paper, Grid, Stack } from '@mui/material'; // ADDED: Grid and Stack for the new section
+import React, { useState } from 'react';
+import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, IconButton, InputAdornment, MenuItem, Paper, Stack, Switch, TextField, Tooltip, Typography, InputBase } from '@mui/material';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import SearchIcon from '@mui/icons-material/Search';
+import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid } from '@mui/x-data-grid';
 
-// ADDED: Expanded lore-specific columns
-const columns = [
-  { field: 'id', headerName: 'ID', width: 70 },
-  { field: 'firstName', headerName: 'First name', width: 130 },
-  { field: 'lastName', headerName: 'Last name', width: 130 },
-  { field: 'parent', headerName: 'Godly Parent', width: 150 }, // NEW
-  { field: 'weapon', headerName: 'Primary Weapon', width: 180 }, // NEW
-  { field: 'age', headerName: 'Age', type: 'number', width: 90 },
-  {
-    field: 'fullName',
-    headerName: 'Full name',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    width: 200,
-    valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
+import usersSeed from '../../assets/users.json?raw';
+
+const roles = ['admin', 'editor', 'viewer'];
+const genders = ['male', 'female', 'other'];
+
+const blankForm = {
+  firstName: '', lastName: '', age: '', gender: '', contactNumber: '',
+  email: '', role: 'editor', username: '', password: '', address: '', isActive: true,
+  parent: '', weapon: ''
+};
+
+const loadUsers = () => {
+  try {
+    const parsed = JSON.parse(usersSeed);
+    return parsed.map((user, index) => ({ ...user, id: Number(user.id) || index + 1 }));
+  } catch {
+    return [];
+  }
+};
+
+const initialUsers = loadUsers();
+
+const selectSx = {
+  minWidth: 140,
+  '& .MuiOutlinedInput-root': {
+    color: 'white',
+    '& fieldset': { borderColor: '#480415' },
+    '&:hover fieldset': { borderColor: '#730c1e' },
+    '&.Mui-focused fieldset': { borderColor: '#ea580c' },
   },
-];
-
-// ADDED: Expanded Camp Half-Blood Roster with Parent and Weapon data
-const rows = [
-  { id: 1, lastName: 'Jackson', firstName: 'Percy', age: 16, parent: 'Poseidon', weapon: 'Riptide (Sword)' },
-  { id: 2, lastName: 'Chase', firstName: 'Annabeth', age: 16, parent: 'Athena', weapon: 'Celestial Bronze Knife' },
-  { id: 3, lastName: 'Underwood', firstName: 'Grover', age: 32, parent: 'Pan', weapon: 'Reed Pipes' },
-  { id: 4, lastName: 'di Angelo', firstName: 'Nico', age: 14, parent: 'Hades', weapon: 'Stygian Iron Sword' },
-  { id: 5, lastName: 'Castellan', firstName: 'Luke', age: 19, parent: 'Hermes', weapon: 'Backbiter' },
-  { id: 6, lastName: 'Grace', firstName: 'Thalia', age: 15, parent: 'Zeus', weapon: 'Aegis & Spear' },
-  { id: 7, lastName: 'Valdez', firstName: 'Leo', age: 15, parent: 'Hephaestus', weapon: 'Magic Tool Belt' },
-  { id: 8, lastName: 'La Rue', firstName: 'Clarisse', age: 17, parent: 'Ares', weapon: 'Maimer (Electric Spear)' },
-];
-
-// ADDED: Data for the Daily Duty Roster
-const dailyDuties = [
-  { id: 1, task: "Border Patrol", assigned: "Clarisse & Ares Cabin", time: "06:00 - 12:00" },
-  { id: 2, task: "Strawberry Fields", assigned: "Katie & Demeter Cabin", time: "08:00 - 14:00" },
-  { id: 3, task: "Kitchen/KP Duty", assigned: "Stoll Brothers & Hermes Cabin", time: "11:00 - 19:00" },
-  { id: 4, task: "Canoe Lake Guard", assigned: "Percy Jackson", time: "13:00 - 17:00" },
-];
+  '& .MuiInputLabel-root': { color: '#a3a3a3' },
+  '& .MuiInputLabel-root.Mui-focused': { color: '#ea580c' },
+  '& .MuiSvgIcon-root': { color: 'white' },
+};
 
 export default function UsersPage() {
+  const [users, setUsers] = useState(initialUsers);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [formData, setFormData] = useState(blankForm);
+  const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterRole, setFilterRole] = useState('all');
+  const [filterStatus, setFilterStatus] = useState('all');
+
+  const handleOpenModal = () => {
+    setFormData(blankForm);
+    setEditingId(null);
+    setErrors({});
+    setModalOpen(true);
+  };
+
+  const handleOpenEdit = (user) => {
+    setFormData({ ...user });
+    setEditingId(user.id);
+    setErrors({});
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setEditingId(null);
+  };
+
+  const handleChange = (e) => {
+    const { name, value, checked, type } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+    if (errors[name]) setErrors({ ...errors, [name]: null });
+  };
+
+  const validateForm = () => {
+    let newErrors = {};
+    if (formData.password.length < 8) newErrors.password = "Must be at least 8 characters.";
+    if (!/^\d{11}$/.test(formData.contactNumber)) newErrors.contactNumber = "Must be exactly 11 digits.";
+    if (!/^\d+$/.test(formData.age)) newErrors.age = "Must be a number only.";
+    if (/\s/.test(formData.username)) newErrors.username = "Username must not contain spaces.";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    if (editingId !== null) {
+      setUsers((prev) => prev.map((u) => u.id === editingId ? { ...formData, id: editingId } : u));
+    } else {
+      setUsers((prev) => [...prev, { ...formData, id: prev.length + 1 }]);
+    }
+    handleCloseModal();
+  };
+
+  const handleToggleStatus = (id) => {
+    setUsers((prev) => prev.map((u) => u.id === id ? { ...u, isActive: !u.isActive } : u));
+  };
+
+  const filteredUsers = users.filter((user) => {
+    const term = searchTerm.toLowerCase();
+    const matchSearch =
+      user.firstName?.toLowerCase().includes(term) ||
+      user.lastName?.toLowerCase().includes(term) ||
+      user.email?.toLowerCase().includes(term) ||
+      user.username?.toLowerCase().includes(term);
+    const matchRole = filterRole === 'all' || user.role === filterRole;
+    const matchStatus = filterStatus === 'all' || (filterStatus === 'active' ? user.isActive : !user.isActive);
+    return matchSearch && matchRole && matchStatus;
+  });
+
+  const columns = [
+    { field: 'id', headerName: 'ID', width: 60 },
+    {
+      field: 'fullName', headerName: 'Demigod Name', flex: 1.5, minWidth: 150,
+      valueGetter: (params, row) => `${row.firstName || ''} ${row.lastName || ''}`,
+    },
+    { field: 'parent', headerName: 'Godly Parent', flex: 1, minWidth: 130 },
+    { field: 'weapon', headerName: 'Weapon', flex: 1, minWidth: 140 },
+    { field: 'role', headerName: 'Role', width: 90 },
+    {
+      field: 'isActive', headerName: 'Status', width: 110,
+      renderCell: (params) => (
+        <Chip label={params.value ? 'Active' : 'Inactive'} color={params.value ? 'success' : 'default'} size="small" />
+      ),
+    },
+    {
+      field: 'actions', headerName: 'Actions', width: 180, sortable: false,
+      renderCell: (params) => (
+        <Stack direction="row" spacing={1} alignItems="center" sx={{ height: '100%' }}>
+          <Tooltip title="Edit">
+            <IconButton
+              size="small"
+              onClick={() => handleOpenEdit(params.row)}
+              sx={{ border: '1px solid #0284c7', color: '#0284c7', borderRadius: 1, '&:hover': { bgcolor: '#0284c720' } }}
+            >
+              <EditIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Button
+            variant="outlined"
+            size="small"
+            color={params.row.isActive ? 'error' : 'success'}
+            onClick={() => handleToggleStatus(params.row.id)}
+            sx={{ minWidth: 90, fontSize: '0.72rem' }}
+          >
+            {params.row.isActive ? 'Deactivate' : 'Activate'}
+          </Button>
+        </Stack>
+      ),
+    },
+  ];
+
   return (
-    <Box>
-      <Typography variant="h4" gutterBottom sx={{ color: 'white' }}>
-        Demigod Directory
-      </Typography>
-      
-      {/* Main DataGrid Section */}
-      <Paper sx={{ height: 450, width: '100%', mt: 2, backgroundColor: 'white' }}>
+    <Box sx={{ width: '100%' }}>
+      {/* Header */}
+      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, width: '100%', mb: 3, gap: 2 }}>
+        <Typography variant="h4" sx={{ color: 'white', fontWeight: 'bold', m: 0 }}>
+          Demigod Directory
+        </Typography>
+        <Button variant="contained" sx={{ bgcolor: '#ea580c', whiteSpace: 'nowrap' }} onClick={handleOpenModal}>
+          Recruit Camper
+        </Button>
+      </Box>
+
+      {/* Search & Filters */}
+      <Paper sx={{ p: 2, mb: 3 }}>
+        <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems="center">
+          {/* Custom search input */}
+          <Box sx={{ display: 'flex', alignItems: 'center', flex: 1, bgcolor: '#0f0103', border: '1px solid #480415', borderRadius: 1, px: 1.5, py: 0.5, '&:focus-within': { borderColor: '#ea580c' } }}>
+            <SearchIcon sx={{ color: '#a3a3a3', mr: 1, fontSize: 20 }} />
+            <InputBase
+              placeholder="Search by Name, Email, or Username..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              sx={{ flex: 1, color: 'white', fontSize: 14, '& ::placeholder': { color: '#a3a3a3' } }}
+            />
+          </Box>
+
+          <TextField
+            select label="Role" size="small"
+            value={filterRole} onChange={(e) => setFilterRole(e.target.value)}
+            sx={selectSx}
+          >
+            <MenuItem value="all">All Roles</MenuItem>
+            {roles.map(r => <MenuItem key={r} value={r}>{r}</MenuItem>)}
+          </TextField>
+
+          <TextField
+            select label="Status" size="small"
+            value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}
+            sx={selectSx}
+          >
+            <MenuItem value="all">All Statuses</MenuItem>
+            <MenuItem value="active">Active</MenuItem>
+            <MenuItem value="inactive">Inactive</MenuItem>
+          </TextField>
+        </Stack>
+      </Paper>
+
+      {/* Table */}
+      <Paper sx={{ height: 450, width: '100%' }}>
         <DataGrid
-          rows={rows}
+          rows={filteredUsers}
           columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 5 },
-            },
-          }}
+          initialState={{ pagination: { paginationModel: { pageSize: 5 } } }}
           pageSizeOptions={[5, 10]}
           checkboxSelection
           disableRowSelectionOnClick
         />
       </Paper>
 
-      <Typography variant="caption" sx={{ mt: 3, display: 'block', color: 'rgba(255,255,255,0.6)', fontStyle: 'italic' }}>
-        *All campers must report to their assigned stations or face extra cleaning duty in the harpies' nests.
-      </Typography>
+      <Dialog open={modalOpen} onClose={handleCloseModal} fullWidth maxWidth="md">
+        <Box component="form" onSubmit={handleSubmit}>
+          <DialogTitle>{editingId !== null ? 'Edit Demigod' : 'Register New Demigod'}</DialogTitle>
+          <DialogContent dividers>
+            <Stack spacing={3} sx={{ mt: 1 }}>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <TextField label="First Name" name="firstName" value={formData.firstName} onChange={handleChange} fullWidth required />
+                <TextField label="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} fullWidth required />
+              </Stack>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <TextField label="Godly Parent" name="parent" value={formData.parent} onChange={handleChange} fullWidth required />
+                <TextField label="Primary Weapon" name="weapon" value={formData.weapon} onChange={handleChange} fullWidth required />
+              </Stack>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <TextField label="Age" name="age" value={formData.age} onChange={handleChange} fullWidth required error={!!errors.age} helperText={errors.age} />
+                <TextField select label="Gender" name="gender" value={formData.gender} onChange={handleChange} fullWidth required>
+                  {genders.map(g => <MenuItem key={g} value={g}>{g}</MenuItem>)}
+                </TextField>
+              </Stack>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <TextField label="Contact Number" name="contactNumber" value={formData.contactNumber} onChange={handleChange} fullWidth required error={!!errors.contactNumber} helperText={errors.contactNumber} />
+                <TextField label="Email Address" name="email" type="email" value={formData.email} onChange={handleChange} fullWidth required />
+              </Stack>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <TextField select label="Role" name="role" value={formData.role} onChange={handleChange} fullWidth required>
+                  {roles.map(r => <MenuItem key={r} value={r}>{r}</MenuItem>)}
+                </TextField>
+                <TextField label="Username" name="username" value={formData.username} onChange={handleChange} fullWidth required error={!!errors.username} helperText={errors.username} />
+              </Stack>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <TextField
+                  label="Password" name="password" type={showPassword ? 'text' : 'password'}
+                  value={formData.password} onChange={handleChange} fullWidth required
+                  error={!!errors.password} helperText={errors.password}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              </Stack>
+              <TextField label="Address (Cabin/Location)" name="address" value={formData.address} onChange={handleChange} fullWidth multiline rows={2} required />
+              <FormControlLabel control={<Switch checked={formData.isActive} onChange={handleChange} name="isActive" color="primary" />} label="Currently at Camp" />
+            </Stack>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseModal}>Cancel</Button>
+            <Button type="submit" variant="contained" sx={{ bgcolor: '#ea580c' }}>
+              {editingId !== null ? 'Save Changes' : 'Add Demigod'}
+            </Button>
+          </DialogActions>
+        </Box>
+      </Dialog>
     </Box>
   );
 }

@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1, "firstName": "Percy", "lastName": "Jackson", "age": "16", "gender": "male", "contactNumber": "09171234567", "email": "percy@camphalfblood.org", "role": "admin", "username": "seaweedbrain", "password": "BlueFood123!", "address": "Cabin 3", "isActive": true, "parent": "Poseidon", "weapon": "Riptide"
+  },
+  {
+    "id": 2, "firstName": "Annabeth", "lastName": "Chase", "age": "16", "gender": "female", "contactNumber": "09182345678", "email": "annabeth@camphalfblood.org", "role": "admin", "username": "wiseowl", "password": "Architecture123!", "address": "Cabin 6", "isActive": true, "parent": "Athena", "weapon": "Bronze Knife"
+  },
+  {
+    "id": 3, "firstName": "Grover", "lastName": "Underwood", "age": "32", "gender": "male", "contactNumber": "09193456789", "email": "grover@camphalfblood.org", "role": "viewer", "username": "goatboy", "password": "Enchiladas123!", "address": "Clovan's Couch", "isActive": true, "parent": "Pan", "weapon": "Reed Pipes"
+  },
+  {
+    "id": 4, "firstName": "Nico", "lastName": "di Angelo", "age": "14", "gender": "male", "contactNumber": "09214567890", "email": "nico@camphalfblood.org", "role": "editor", "username": "ghostking", "password": "Mythomagic123!", "address": "Cabin 13", "isActive": false, "parent": "Hades", "weapon": "Stygian Sword"
+  },
+  {
+    "id": 5, "firstName": "Luke", "lastName": "Castellan", "age": "19", "gender": "male", "contactNumber": "09225678901", "email": "luke@camphalfblood.org", "role": "editor", "username": "backbiter", "password": "Kronos123!", "address": "Cabin 11", "isActive": false, "parent": "Hermes", "weapon": "Backbiter"
+  }
+]
