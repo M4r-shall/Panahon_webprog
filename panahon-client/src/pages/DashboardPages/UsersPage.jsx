@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, IconButton, InputAdornment, MenuItem, Paper, Stack, Switch, TextField, Tooltip, Typography, InputBase } from '@mui/material';
+import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, IconButton, InputAdornment, MenuItem, Paper, Stack, Switch, TextField, Typography, InputBase } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import SearchIcon from '@mui/icons-material/Search';
-import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid } from '@mui/x-data-grid';
 
 import usersSeed from '../../assets/users.json?raw';
@@ -134,15 +133,14 @@ export default function UsersPage() {
       field: 'actions', headerName: 'Actions', width: 180, sortable: false,
       renderCell: (params) => (
         <Stack direction="row" spacing={1} alignItems="center" sx={{ height: '100%' }}>
-          <Tooltip title="Edit">
-            <IconButton
-              size="small"
-              onClick={() => handleOpenEdit(params.row)}
-              sx={{ border: '1px solid #0284c7', color: '#0284c7', borderRadius: 1, '&:hover': { bgcolor: '#0284c720' } }}
-            >
-              <EditIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => handleOpenEdit(params.row)}
+            sx={{ minWidth: 60, fontSize: '0.72rem', borderColor: '#0284c7', color: '#0284c7', '&:hover': { bgcolor: '#0284c720', borderColor: '#0284c7' } }}
+          >
+            Edit
+          </Button>
           <Button
             variant="outlined"
             size="small"
