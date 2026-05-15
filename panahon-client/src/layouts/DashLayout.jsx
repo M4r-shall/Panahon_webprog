@@ -14,6 +14,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
 import AssessmentIcon from '@mui/icons-material/Assessment';
+import ArticleIcon from '@mui/icons-material/Article';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 // --- Tactical Dark Theme ---
@@ -44,10 +45,11 @@ const tacticalTheme = createTheme({
 
 const drawerWidth = 260;
 
-const navItems = [
-  { label: 'Tactical Hub', to: '/dashboard', icon: DashboardIcon },
-  { label: 'War Reports', to: '/dashboard/reports', icon: AssessmentIcon },
-  { label: 'Demigod Roster', to: '/dashboard/users', icon: PeopleIcon },
+const allNavItems = [
+  { label: 'Tactical Hub', to: '/dashboard', icon: DashboardIcon, roles: ['admin', 'editor'] },
+  { label: 'War Reports', to: '/dashboard/reports', icon: AssessmentIcon, roles: ['admin', 'editor'] },
+  { label: 'Demigod Roster', to: '/dashboard/users', icon: PeopleIcon, roles: ['admin', 'editor'] },
+  { label: 'Articles', to: '/dashboard/articles', icon: ArticleIcon, roles: ['admin', 'editor'] },
 ];
 
 const openedMixin = (theme) => ({
@@ -110,6 +112,16 @@ const DashLayout = () => {
   const [open, setOpen] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
+  const userType = localStorage.getItem('type') || '';
+  const firstName = localStorage.getItem('firstName') || 'User';
+  const navItems = allNavItems.filter((item) => item.roles.includes(userType));
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('firstName');
+    localStorage.removeItem('type');
+    navigate('/');
+  };
 
   return (
     <ThemeProvider theme={tacticalTheme}>
@@ -122,7 +134,7 @@ const DashLayout = () => {
               {open ? <MenuOpenIcon /> : <MenuIcon />}
             </IconButton>
             <Typography variant="h6" noWrap sx={{ flexGrow: 1, letterSpacing: 2, fontWeight: 'bold', color: '#730c1e' }}>
-              CAMP HALF-BLOOD OS
+              Welcome, {firstName}
             </Typography>
             <Search>
               <Box sx={{ position: 'absolute', height: '100%', display: 'flex', alignItems: 'center', pl: 2, pointerEvents: 'none' }}>
@@ -130,8 +142,8 @@ const DashLayout = () => {
               </Box>
               <StyledInputBase placeholder="Search Ranks..." />
             </Search>
-            <Button variant="contained" startIcon={<LogoutIcon />} onClick={() => navigate('/')} sx={{ bgcolor: '#730c1e', '&:hover': { bgcolor: '#480415' } }}>
-              Exit
+            <Button variant="contained" startIcon={<LogoutIcon />} onClick={handleLogout} sx={{ bgcolor: '#730c1e', '&:hover': { bgcolor: '#480415' } }}>
+              Logout
             </Button>
           </Toolbar>
         </AppBar>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Typography, Card, CardContent, Box, Paper } from '@mui/material';
 import { BarChart, PieChart, Gauge, LineChart } from '@mui/x-charts';
 import { DataGrid } from '@mui/x-data-grid';
@@ -57,10 +57,15 @@ const statCards = [
 const GAP = 3; // spacing between panels (theme units)
 
 export default function DashboardPage() {
+  const firstName = localStorage.getItem('firstName') || 'User';
+
   return (
     <Box sx={{ width: '100%', pb: 4 }}>
 
-      <Typography variant="h4" sx={{ color: 'white', fontWeight: 'bold', mb: 3 }}>
+      <Typography variant="h4" sx={{ color: 'white', fontWeight: 'bold', mb: 1 }}>
+        Welcome, {firstName}
+      </Typography>
+      <Typography variant="h6" sx={{ color: '#a3a3a3', mb: 3 }}>
         Tactical Hub Overview
       </Typography>
 

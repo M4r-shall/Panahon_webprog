@@ -11,6 +11,7 @@ import SignUpPage from './pages/AuthPages/SignUpPage.jsx';
 import DashboardPage from './pages/DashboardPages/DashboardPage.jsx';
 import ReportsPage from './pages/DashboardPages/ReportsPage.jsx';
 import UsersPage from './pages/DashboardPages/UsersPage.jsx';
+import DashArticleListPage from './pages/DashboardPages/DashArticleListPage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 
 const routes = [
@@ -43,6 +44,7 @@ const routes = [
       { index: true, element: <DashboardPage /> },
       { path: 'reports', element: <ReportsPage /> },
       { path: 'users', element: <UsersPage /> },
+      { path: 'articles', element: <DashArticleListPage /> },
     ]
   }
 ];

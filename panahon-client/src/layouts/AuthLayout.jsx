@@ -16,7 +16,7 @@ const AuthLayout = () => {
         </div>
 
         {/* RIGHT SIDE: Auth Forms (Outlet) */}
-        <main className="flex items-center bg-[#0a070b] px-6 py-10 sm:px-10 lg:px-16">
+        <main className="flex items-center bg-[#0a070b] px-6 py-10 sm:px-10 lg:px-16 overflow-y-auto max-h-screen">
           <div className="mx-auto w-full max-w-md">
             <Outlet />
           </div>
