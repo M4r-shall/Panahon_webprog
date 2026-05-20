@@ -5,10 +5,9 @@ import { DataGrid } from '@mui/x-data-grid';
 
 import { fetchArticles, createArticle, updateArticle, deleteArticle } from '../../services/ArticleService';
 
-const blankForm = { slug: '', title: '', category: '', paragraphs: '', isActive: true };
+const blankForm = { slug: '', title: '', category: '', image: '', paragraphs: '', isActive: 'true' };
 
-const selectSx = {
-    minWidth: 160,
+const fieldSx = {
     '& .MuiOutlinedInput-root': {
         color: 'white',
         '& fieldset': { borderColor: '#480415' },
@@ -17,6 +16,11 @@ const selectSx = {
     },
     '& .MuiInputLabel-root': { color: '#a3a3a3' },
     '& .MuiInputLabel-root.Mui-focused': { color: '#ea580c' },
+};
+
+const selectSx = {
+    minWidth: 160,
+    ...fieldSx,
     '& .MuiSvgIcon-root': { color: 'white' },
 };
 
@@ -26,6 +30,7 @@ export default function DashArticleListPage() {
     const [modalOpen, setModalOpen] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [formData, setFormData] = useState(blankForm);
+    const [submitError, setSubmitError] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
     const [filterStatus, setFilterStatus] = useState('all');
 
@@ -50,7 +55,14 @@ export default function DashArticleListPage() {
     };
 
     const handleOpenEdit = (article) => {
-        setFormData({ ...article, paragraphs: article.paragraphs?.join('\n') || '' });
+        setFormData({
+            slug: article.slug || '',
+            title: article.title || '',
+            category: article.category || '',
+            image: article.image || '',
+            paragraphs: article.paragraphs?.join('\n') || '',
+            isActive: article.isActive ? 'true' : 'false',
+        });
         setEditingId(article.id);
         setModalOpen(true);
     };
@@ -58,18 +70,25 @@ export default function DashArticleListPage() {
     const handleCloseModal = () => {
         setModalOpen(false);
         setEditingId(null);
+        setSubmitError('');
     };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+        const normalized = name === 'slug'
+            ? value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+            : value;
+        setFormData((prev) => ({ ...prev, [name]: normalized }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setSubmitError('');
         const payload = {
             ...formData,
+            isActive: formData.isActive === 'true',
             paragraphs: formData.paragraphs.split('\n').filter((p) => p.trim() !== ''),
+            image: formData.image.trim(),
         };
         try {
             if (editingId) {
@@ -80,14 +99,16 @@ export default function DashArticleListPage() {
             await loadArticles();
             handleCloseModal();
         } catch (error) {
-            console.error('Error saving article:', error);
+            setSubmitError(error.response?.data?.message || 'Failed to save. Check your connection and try again.');
         }
     };
 
     const handleToggleStatus = async (id, currentStatus) => {
         try {
             await updateArticle(id, { isActive: !currentStatus });
-            await loadArticles();
+            setArticles((prev) =>
+                prev.map((a) => (a.id === id ? { ...a, isActive: !currentStatus } : a))
+            );
         } catch (error) {
             console.error('Error toggling article status:', error);
         }
@@ -184,19 +205,39 @@ export default function DashArticleListPage() {
                     <DialogTitle>{editingId ? 'Edit Article' : 'Add Article'}</DialogTitle>
                     <DialogContent dividers>
                         <Stack spacing={3} sx={{ mt: 1 }}>
-                            <TextField label="Slug" name="slug" value={formData.slug} onChange={handleChange} fullWidth required />
-                            <TextField label="Title" name="title" value={formData.title} onChange={handleChange} fullWidth required />
-                            <TextField label="Category" name="category" value={formData.category} onChange={handleChange} fullWidth required />
+                            <TextField
+                                label="Slug" name="slug" value={formData.slug}
+                                onChange={handleChange} fullWidth required
+                                placeholder="e.g. ares-god"
+                                helperText={`Article URL: /articles/${formData.slug || 'your-slug'}`}
+                                sx={{ ...fieldSx, '& .MuiFormHelperText-root': { color: '#666' } }}
+                            />
+                            <TextField label="Title" name="title" value={formData.title} onChange={handleChange} fullWidth required sx={fieldSx} />
+                            <TextField label="Category" name="category" value={formData.category} onChange={handleChange} fullWidth required sx={fieldSx} />
+                            <TextField
+                                label="Image URL"
+                                name="image"
+                                value={formData.image}
+                                onChange={handleChange}
+                                fullWidth
+                                placeholder="https://example.com/image.jpg"
+                                sx={fieldSx}
+                            />
                             <TextField
                                 label="Paragraphs (one per line)"
                                 name="paragraphs" value={formData.paragraphs}
-                                onChange={handleChange} fullWidth multiline rows={5}
+                                onChange={handleChange} fullWidth multiline rows={5} sx={fieldSx}
                             />
-                            <TextField select label="Status" name="isActive" value={formData.isActive} onChange={(e) => setFormData((p) => ({ ...p, isActive: e.target.value === 'true' }))} fullWidth>
+                            <TextField select label="Status" name="isActive" value={formData.isActive} onChange={(e) => setFormData((p) => ({ ...p, isActive: e.target.value }))} fullWidth sx={selectSx}>
                                 <MenuItem value="true">Active</MenuItem>
                                 <MenuItem value="false">Inactive</MenuItem>
                             </TextField>
                         </Stack>
+                        {submitError && (
+                            <Box sx={{ mt: 2, p: 1.5, bgcolor: '#3b0012', border: '1px solid #730c1e', borderRadius: 1 }}>
+                                <Typography sx={{ color: '#f87171', fontSize: 13 }}>{submitError}</Typography>
+                            </Box>
+                        )}
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleCloseModal}>Cancel</Button>

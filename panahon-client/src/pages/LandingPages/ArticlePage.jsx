@@ -1,15 +1,42 @@
 import { useParams, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import Button from '../../components/Button';
-import articles from '../../assets/article-content.js';
+import staticArticles from '../../assets/article-content.js';
+import { fetchArticleBySlug, fetchArticleById } from '../../services/ArticleService';
 
 const ArticlePage = () => {
-  // Grab the dynamic ':name' part of the URL
   const { name } = useParams();
-  
-  // Find the specific article in your data file that matches this name
-  const article = articles.find(article => article.name === name);
+  const staticArticle = staticArticles.find((a) => a.name === name);
+  const [dbArticle, setDbArticle] = useState(null);
+  const [loading, setLoading] = useState(!staticArticle);
 
-  // If the user types a random URL like /articles/fake-project, show this:
+  useEffect(() => {
+    if (staticArticle) return;
+
+    setLoading(true);
+    fetchArticleBySlug(name)
+      .then(({ data }) => {
+        setDbArticle({ ...data.article, content: data.article.paragraphs });
+        setLoading(false);
+      })
+      .catch(() => {
+        fetchArticleById(name)
+          .then(({ data }) => setDbArticle({ ...data.article, content: data.article.paragraphs }))
+          .catch(() => setDbArticle(null))
+          .finally(() => setLoading(false));
+      });
+  }, [name]);
+
+  const article = staticArticle ?? dbArticle;
+
+  if (loading) {
+    return (
+      <div className="flex w-full items-center justify-center py-20">
+        <p className="text-zinc-400">Loading...</p>
+      </div>
+    );
+  }
+
   if (!article) {
     return (
       <div className="flex w-full flex-col items-center justify-center gap-6 px-4 py-20">
@@ -22,10 +49,9 @@ const ArticlePage = () => {
     );
   }
 
-  // If the article IS found, render the detailed view:
   return (
     <div className="flex w-full flex-col gap-6">
-      
+
       {/* --- HEADER SECTION --- */}
       <section className="border-y border-[#480415] bg-transparent px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
         <div className="max-w-3xl mx-auto">
@@ -34,11 +60,11 @@ const ArticlePage = () => {
               ← Back to Portfolio
             </Link>
           </div>
-          
+
           <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.4em] text-[#730c1e]">
             {article.category || 'Project Detail'}
           </p>
-          
+
           <h1 className="text-4xl font-extrabold leading-tight text-white sm:text-5xl">
             {article.title}
           </h1>
@@ -48,14 +74,26 @@ const ArticlePage = () => {
       {/* --- CONTENT SECTION --- */}
       <section className="bg-transparent px-4 py-6 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl">
-          
+
           {/* Hero Image for the Article */}
           <div className="mb-10 flex aspect-video w-full items-center justify-center rounded-2xl bg-[#140f17] border border-[#480415] overflow-hidden shadow-[0_0_30px_rgba(115,12,30,0.1)]">
             {article.image ? (
-              <img src={article.image} alt={article.title} className="w-full h-full object-cover" />
-            ) : (
-              <div className="h-24 w-24 border border-[#480415] bg-[#210207]/40" />
-            )}
+              <img
+                src={article.image}
+                alt={article.title}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.nextSibling.style.display = 'flex';
+                }}
+              />
+            ) : null}
+            <div
+              className="w-full h-full flex items-center justify-center text-[#480415] text-xs tracking-widest uppercase"
+              style={{ display: article.image ? 'none' : 'flex' }}
+            >
+              No image
+            </div>
           </div>
 
           {/* The Written Content */}
@@ -73,10 +111,10 @@ const ArticlePage = () => {
               Back to Portfolio
             </Button>
           </div>
-          
+
         </div>
       </section>
-      
+
     </div>
   );
 };

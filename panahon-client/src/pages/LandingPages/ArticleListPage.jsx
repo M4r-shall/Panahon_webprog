@@ -49,15 +49,13 @@ const ArticleListPage = () => {
             <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-[#730c1e]">Latest Articles</p>
             <h2 className="mt-2 text-3xl font-bold text-white">From the Dashboard</h2>
           </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {dbArticles.map((article) => (
-              <div key={article._id} className="rounded-lg border border-[#480415] bg-[#210207]/40 p-5 flex flex-col gap-3">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-[#730c1e]">{article.category}</p>
-                <h3 className="text-lg font-bold text-white">{article.title}</h3>
-                <p className="text-sm text-zinc-400 line-clamp-3">{article.paragraphs?.[0] || ''}</p>
-              </div>
-            ))}
-          </div>
+          <ArticleList articles={dbArticles.map((a) => ({
+            name: a.slug || a._id,
+            title: a.title,
+            category: a.category,
+            image: a.image,
+            content: [a.paragraphs?.[0] || ''],
+          }))} />
         </section>
       )}
 

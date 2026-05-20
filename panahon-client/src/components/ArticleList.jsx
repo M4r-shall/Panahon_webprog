@@ -25,14 +25,22 @@ const ArticleList = ({ articles }) => {
             <div className="flex aspect-4/3 items-center justify-center rounded-xl bg-[#140f17] border border-[#480415] overflow-hidden relative">
               <div className="absolute inset-0 bg-[#730c1e]/5 group-hover:bg-transparent transition-colors z-10"></div>
               {article.image ? (
-                <img 
-                  src={article.image} 
-                  alt={article.title} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                <img
+                  src={article.image}
+                  alt={article.title}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.nextSibling.style.display = 'flex';
+                  }}
                 />
-              ) : (
-                <div className="h-12 w-12 border border-[#480415] bg-[#210207]/40" />
-              )}
+              ) : null}
+              <div
+                className="w-full h-full flex items-center justify-center text-[#480415] text-xs tracking-widest uppercase"
+                style={{ display: article.image ? 'none' : 'flex' }}
+              >
+                No image
+              </div>
             </div>
             
             {/* Category Label */}
